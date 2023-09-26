@@ -1,12 +1,20 @@
 import { Module } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BooksController } from './books.controller';
-import { Book } from './entities/book.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from 'src/database/database.module';
+import { DataSource } from 'typeorm';
+import { Author } from 'src/author/entities/author.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Book])],
-  providers: [BooksService],
+  imports: [DatabaseModule],
+  providers: [
+    {
+      provide: 'CUSTOMER_REPO',
+      useFactory: (dataSource: DataSource) => dataSource.getRepository(Author),
+      inject: ['DATA_SOURCE'],
+    },
+    BooksService,
+  ],
   controllers: [BooksController],
 })
 export class BooksModule {}

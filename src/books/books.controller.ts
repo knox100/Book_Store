@@ -15,32 +15,32 @@ import { BooksService } from './books.service';
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
-  @Post()
-  async createBook(@Body() createBook: CreateBookDto): Promise<Book> {
-    return await this.bookService.createBook(createBook);
-  }
+  // @Post()
+  // async createBook(@Body() createBook: CreateBookDto): Promise<Book> {
+  //   return await this.bookService.createBook(createBook);
+  // }
 
-  @Get()
-  async getAllBooks(): Promise<Book[]> {
-    return await this.bookService.getAllBook();
-  }
+  // @Get()
+  // async getAllBooks(): Promise<Book[]> {
+  //   return await this.bookService.getAllBook();
+  // }
 
-  @Get(':id')
-  async getBookById(@Param('id') id: number): Promise<Book> {
-    const book = await this.bookService.getBookById(id);
+  // @Get(':id')
+  // async getBookById(@Param('id') id: number): Promise<Book> {
+  //   const book = await this.bookService.getBookById(id);
 
-    if (!book) {
-      throw new NotFoundException('User does not exist!');
-    } else {
-      return book;
-    }
-  }
+  //   if (!book) {
+  //     throw new NotFoundException('User does not exist!');
+  //   } else {
+  //     return book;
+  //   }
+  // }
 
-  @Patch(':id')
-  async updateBookDetails(
-    @Param('id') id: number,
-    @Body() payload: CreateBookDto,
-  ) {
-    return await this.bookService.updateBookDetails(id, payload);
-  }
+  // @Patch(':id')
+  // async updateBookDetails(
+  //   @Param('id') id: number,
+  //   @Body() payload: CreateBookDto,
+  // ) {
+  //   return await this.bookService.updateBookDetails(id, payload);
+  // }
 }
