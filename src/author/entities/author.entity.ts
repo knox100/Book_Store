@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiHideProperty } from '@nestjs/swagger';
+import { Book } from 'src/books/entities/book.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Author {
@@ -14,6 +16,7 @@ export class Author {
   @Column()
   about: string;
 
-  // @OneToMany(() => Book, (book) => book.author)
-  // books: Book[];
+  @ApiHideProperty()
+  @OneToMany(() => Book, (book) => book.author)
+  books: Book[];
 }
