@@ -3,3 +3,5 @@ export class CreateAuthorDto {
   lastName: string;
   about: string;
 }
+
+export class UpdateAuthorDto extends CreateAuthorDto {}

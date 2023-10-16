@@ -15,6 +15,9 @@ export class Book {
   @Column()
   description: string;
 
+  @Column()
+  publicationDate: string;
+
   @ManyToOne(() => Author, (author) => author.books)
   author: Author;
 }

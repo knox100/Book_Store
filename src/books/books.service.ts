@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Book } from './entities/book.entity';
-import { In, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateBookDto } from './dto/create-book.dto';
+import { Repository } from 'typeorm';
+import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { Author } from 'src/author/entities/author.entity';
 
 @Injectable()
@@ -10,7 +9,6 @@ export class BooksService {
   constructor(
     @Inject('BOOK_REPO')
     private bookRepository: Repository<Book>,
-
     @Inject('AUTHOR_REPO')
     private authorRepository: Repository<Author>,
   ) {}
@@ -31,6 +29,7 @@ export class BooksService {
     newBook.title = createBookDto.title;
     newBook.genre = createBookDto.genre;
     newBook.description = createBookDto.description;
+    newBook.publicationDate = createBookDto.publicationDate;
 
     const book = this.bookRepository.create(newBook);
     const createdBook = await this.bookRepository.save(book);
@@ -39,7 +38,7 @@ export class BooksService {
   }
 
   // Get all books
-  async getAllBook(): Promise<Book[]> {
+  async books(): Promise<Book[]> {
     return this.bookRepository.find({
       relations: {
         author: true,
@@ -47,9 +46,30 @@ export class BooksService {
     });
   }
 
-  //Get books by author id
-  async getAuthorBookById(id: number): Promise<Book[]> {
-    const book = this.bookRepository.find({
+  // Get book by id
+  async getBookById(id: number): Promise<Book> {
+    const book = await this.bookRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        author: true,
+      },
+    });
+
+    if (!book) {
+      throw new HttpException(
+        `Book with id ${id} was not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return book;
+  }
+
+  // Update book details
+  async updateBookDetails(id: number, payload: UpdateBookDto): Promise<Book> {
+    const book = await this.bookRepository.findOne({
       where: {
         id,
       },
@@ -58,33 +78,37 @@ export class BooksService {
     if (!book) {
       throw new HttpException(
         `Book with id ${id} was not found`,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
 
-    return book;
+    book.genre = payload.genre;
+    book.title = payload.title;
+    book.description = payload.description;
+    book.publicationDate = payload.publicationDate;
+
+    const updatedBookDetails = await this.bookRepository.save(book);
+
+    return updatedBookDetails;
   }
 
-  // // Update book details
-  // async updateBookDetails(id: number, payload: CreateBookDto): Promise<Book> {
-  //   const book = await this.bookRepository.findOne({
-  //     where: {
-  //       id,
-  //     },
-  //   });
+  // Delet book
+  async deleteBook(id: number): Promise<Book> {
+    const book = await this.bookRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
-  //   if (!book) {
-  //     throw new HttpException(
-  //       `Book with id ${id} was not found`,
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
+    const deletedBook = await this.bookRepository.remove(book);
 
-  //   book.genre = payload.genre;
-  //   book.title = payload.title;
+    if (deletedBook) {
+      throw new HttpException(
+        `Book with id ${id} has been deleted`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-  //   const updatedBookDetails = await this.bookRepository.save(book);
-
-  //   return updatedBookDetails;
-  // }
+    return deletedBook;
+  }
 }
