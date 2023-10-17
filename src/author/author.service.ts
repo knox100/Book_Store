@@ -101,13 +101,6 @@ export class AuthorService {
 
     const deletedAuthor = await this.authorRepository.remove(author);
 
-    if (deletedAuthor) {
-      throw new HttpException(
-        `Author with id ${id} has been deleted`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     return deletedAuthor;
   }
 }

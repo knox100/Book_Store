@@ -18,6 +18,8 @@ export class Book {
   @Column()
   publicationDate: string;
 
-  @ManyToOne(() => Author, (author) => author.books)
+  @ManyToOne(() => Author, (author) => author.books, {
+    onDelete: 'CASCADE',
+  })
   author: Author;
 }
