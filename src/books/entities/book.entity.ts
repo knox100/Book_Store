@@ -18,6 +18,9 @@ export class Book {
   @Column()
   publicationDate: string;
 
+  @Column()
+  image_url: string;
+
   @ManyToOne(() => Author, (author) => author.books, {
     onDelete: 'CASCADE',
   })

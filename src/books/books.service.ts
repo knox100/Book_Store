@@ -3,6 +3,8 @@ import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { Author } from 'src/author/entities/author.entity';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
+import { BufferedFile } from 'src/minio-client/file.model';
 
 @Injectable()
 export class BooksService {
@@ -12,12 +14,15 @@ export class BooksService {
 
     @Inject('AUTHOR_REPO')
     private authorRepository: Repository<Author>,
+
+    private minioClientService: MinioClientService,
   ) {}
 
   // Create a book under an author
   async createBook(
     authorId: number,
     createBookDto: CreateBookDto,
+    image: BufferedFile,
   ): Promise<Book> {
     const author = await this.authorRepository.findOne({
       where: {
@@ -25,12 +30,15 @@ export class BooksService {
       },
     });
 
+    const uploadedImage = await this.minioClientService.upload(image);
+
     const newBook = new Book();
     newBook.author = author;
     newBook.title = createBookDto.title;
     newBook.genre = createBookDto.genre;
     newBook.description = createBookDto.description;
     newBook.publicationDate = createBookDto.publicationDate;
+    newBook.image_url = uploadedImage.url;
 
     const book = this.bookRepository.create(newBook);
     const createdBook = await this.bookRepository.save(book);
@@ -76,13 +84,6 @@ export class BooksService {
       },
     });
 
-    if (!book) {
-      throw new HttpException(
-        `Book with id ${id} was not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     book.genre = payload.genre;
     book.title = payload.title;
     book.description = payload.description;
@@ -90,10 +91,17 @@ export class BooksService {
 
     const updatedBookDetails = await this.bookRepository.save(book);
 
+    if (updatedBookDetails) {
+      throw new HttpException(
+        `Book with id ${id} has been updated`,
+        HttpStatus.NO_CONTENT,
+      );
+    }
+
     return updatedBookDetails;
   }
 
-  // Delet book
+  // Delete book
   async deleteBook(id: number): Promise<Book> {
     const book = await this.bookRepository.findOne({
       where: {
@@ -106,7 +114,7 @@ export class BooksService {
     if (deletedBook) {
       throw new HttpException(
         `Book with id ${id} has been deleted`,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.OK,
       );
     }
 

@@ -6,24 +6,32 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { Book } from './entities/book.entity';
 import { BooksService } from './books.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MinioClientService } from 'src/minio-client/minio-client.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { BufferedFile } from 'src/minio-client/file.model';
 
+@ApiTags('Books')
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   //Create a book under a author
   @Post(':authorId')
+  @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create a book under a author' })
   async createBook(
     @Param('authorId') authorId: number,
     @Body() createBook: CreateBookDto,
+    @UploadedFile() image: BufferedFile,
   ): Promise<Book> {
-    return await this.bookService.createBook(authorId, createBook);
+    return await this.bookService.createBook(authorId, createBook, image);
   }
 
   //Get all books

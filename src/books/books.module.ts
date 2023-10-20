@@ -5,9 +5,10 @@ import { DatabaseModule } from 'src/database/database.module';
 import { DataSource } from 'typeorm';
 import { Book } from './entities/book.entity';
 import { Author } from 'src/author/entities/author.entity';
+import { MinioClientModule } from 'src/minio-client/minio-client.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, MinioClientModule],
   providers: [
     {
       provide: 'BOOK_REPO',

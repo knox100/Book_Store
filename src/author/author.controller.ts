@@ -11,10 +11,11 @@ import {
 import { AuthorService } from './author.service';
 import { CreateAuthorDto, UpdateAuthorDto } from './dto/author.dto';
 import { Author } from './entities/author.entity';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Book } from 'src/books/entities/book.entity';
 
-@Controller('author')
+@ApiTags('Authors')
+@Controller('authors')
 export class AuthorController {
   constructor(private authorService: AuthorService) {}
 

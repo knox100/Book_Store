@@ -75,18 +75,18 @@ export class AuthorService {
       },
     });
 
-    if (!author) {
-      throw new HttpException(
-        `Author with id ${id} was not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     author.firstName = payload.firstName;
     author.lastName = payload.lastName;
     author.about = payload.about;
 
     const updatedAuthor = this.authorRepository.save(author);
+
+    if (updatedAuthor) {
+      throw new HttpException(
+        `Book with id ${id} has been updated`,
+        HttpStatus.OK,
+      );
+    }
 
     return updatedAuthor;
   }
@@ -100,6 +100,13 @@ export class AuthorService {
     });
 
     const deletedAuthor = await this.authorRepository.remove(author);
+
+    if (deletedAuthor) {
+      throw new HttpException(
+        `Author with id ${id} has been deleted`,
+        HttpStatus.OK,
+      );
+    }
 
     return deletedAuthor;
   }
