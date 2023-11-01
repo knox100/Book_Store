@@ -14,15 +14,12 @@ export class BooksService {
 
     @Inject('AUTHOR_REPO')
     private authorRepository: Repository<Author>,
-
-    private minioClientService: MinioClientService,
   ) {}
 
   // Create a book under an author
   async createBook(
     authorId: number,
     createBookDto: CreateBookDto,
-    image: BufferedFile,
   ): Promise<Book> {
     const author = await this.authorRepository.findOne({
       where: {
@@ -30,15 +27,12 @@ export class BooksService {
       },
     });
 
-    const uploadedImage = await this.minioClientService.upload(image);
-
     const newBook = new Book();
     newBook.author = author;
     newBook.title = createBookDto.title;
     newBook.genre = createBookDto.genre;
     newBook.description = createBookDto.description;
     newBook.publicationDate = createBookDto.publicationDate;
-    newBook.image_url = uploadedImage.url;
 
     const book = this.bookRepository.create(newBook);
     const createdBook = await this.bookRepository.save(book);

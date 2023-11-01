@@ -31,7 +31,7 @@ export class BooksController {
     @Body() createBook: CreateBookDto,
     @UploadedFile() image: BufferedFile,
   ): Promise<Book> {
-    return await this.bookService.createBook(authorId, createBook, image);
+    return await this.bookService.createBook(authorId, createBook);
   }
 
   //Get all books

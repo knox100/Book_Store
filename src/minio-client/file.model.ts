@@ -4,7 +4,7 @@ export interface BufferedFile {
   encoding: string;
   mimetype: AppMimeType;
   size: number;
-  buffer: Buffer | string;
+  buffer: string;
 }
 
 export interface StoredFile extends HasFile, StoredFileMetadata {}
