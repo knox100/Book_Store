@@ -1,12 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
-import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { Repository } from 'typeorm';
 import { Book } from 'src/books/entities/book.entity';
 import { Author } from 'src/author/entities/author.entity';
-import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
+// import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ImageUploadService {
@@ -19,7 +17,7 @@ export class ImageUploadService {
 
     private minioClientService: MinioClientService,
 
-    private httpService: HttpService,
+    // private httpService: HttpService,
   ) {}
 
   async uploadImage(image: BufferedFile) {

@@ -53,7 +53,7 @@ export class AuthorService {
 
     if (!author) {
       throw new HttpException(
-        `Author with id ${id} was not found`,
+        `Author with id ${id}  not found`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -83,7 +83,7 @@ export class AuthorService {
 
     if (updatedAuthor) {
       throw new HttpException(
-        `Book with id ${id} has been updated`,
+        `Author with id ${id} has been updated`,
         HttpStatus.OK,
       );
     }

@@ -3,8 +3,6 @@ import { Book } from './entities/book.entity';
 import { Repository } from 'typeorm';
 import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
 import { Author } from 'src/author/entities/author.entity';
-import { MinioClientService } from 'src/minio-client/minio-client.service';
-import { BufferedFile } from 'src/minio-client/file.model';
 
 @Injectable()
 export class BooksService {
